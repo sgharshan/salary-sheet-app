@@ -4,13 +4,17 @@ import { db } from '../db/database'
 import { useSettings } from '../hooks/useSettings'
 import CalendarGrid from '../components/calendar/CalendarGrid'
 import DayDetailPanel from '../components/calendar/DayDetailPanel'
+import LogShiftModal from '../components/shifts/LogShiftModal'
+import { deleteShift } from '../hooks/useShifts'
 import { toISODate } from '../lib/dateHelpers'
+import type { Shift } from '../types'
 
 export default function CalendarPage() {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [selectedDate, setSelectedDate] = useState<string | null>(toISODate(now))
+  const [editingShift, setEditingShift] = useState<Shift | null>(null)
   const settings = useSettings()
   const symbol = settings?.currencySymbol ?? '£'
 
@@ -66,8 +70,16 @@ export default function CalendarPage() {
           shifts={selectedShifts}
           payouts={selectedPayouts}
           symbol={symbol}
+          onEditShift={setEditingShift}
+          onDeleteShift={deleteShift}
         />
       )}
+
+      <LogShiftModal
+        open={!!editingShift}
+        onClose={() => setEditingShift(null)}
+        editShift={editingShift}
+      />
     </div>
   )
 }

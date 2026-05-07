@@ -7,9 +7,11 @@ interface Props {
   shifts: Shift[]
   payouts: Payout[]
   symbol: string
+  onEditShift?: (s: Shift) => void
+  onDeleteShift?: (id: string) => void
 }
 
-export default function DayDetailPanel({ date, shifts, payouts, symbol }: Props) {
+export default function DayDetailPanel({ date, shifts, payouts, symbol, onEditShift, onDeleteShift }: Props) {
   const dayTotal = shifts.reduce((s, sh) => s + calcShiftPay(sh.startTime, sh.endTime, sh.hourlyRateSnapshot), 0)
 
   return (
@@ -21,13 +23,21 @@ export default function DayDetailPanel({ date, shifts, payouts, symbol }: Props)
       )}
 
       {shifts.map(s => (
-        <div key={s.id} className="flex justify-between mb-2">
-          <div>
+        <div key={s.id} className="flex justify-between items-start mb-3">
+          <div className="flex-1">
             <div className="text-white text-sm">{s.startTime} – {s.endTime}{s.label ? ` · ${s.label}` : ''}</div>
             <div className="text-[#666] text-xs">{calcHoursWorked(s.startTime, s.endTime).toFixed(1)}h</div>
           </div>
-          <div className="text-green-400 font-semibold text-sm">
-            {symbol}{calcShiftPay(s.startTime, s.endTime, s.hourlyRateSnapshot).toFixed(2)}
+          <div className="flex items-center gap-3 ml-2">
+            <div className="text-green-400 font-semibold text-sm">
+              {symbol}{calcShiftPay(s.startTime, s.endTime, s.hourlyRateSnapshot).toFixed(2)}
+            </div>
+            {onEditShift && (
+              <button onClick={() => onEditShift(s)} className="text-indigo-400 text-xs">Edit</button>
+            )}
+            {onDeleteShift && (
+              <button onClick={() => onDeleteShift(s.id)} className="text-red-500 text-xs">✕</button>
+            )}
           </div>
         </div>
       ))}

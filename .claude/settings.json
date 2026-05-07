@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit *)",
+      "Bash(git -C \"C:\\\\Users\\\\girit\\\\OneDrive\\\\Desktop\\\\MY PROJECTS\\\\Salary sheet app\" log --oneline -5)",
+      "Bash(git -C \"C:\\\\Users\\\\girit\\\\OneDrive\\\\Desktop\\\\MY PROJECTS\\\\Salary sheet app\" show --stat HEAD)",
+      "Bash(git -C \"C:\\\\Users\\\\girit\\\\OneDrive\\\\Desktop\\\\MY PROJECTS\\\\Salary sheet app\" show HEAD:.gitignore)",
+      "Bash(git -C \"C:\\\\Users\\\\girit\\\\OneDrive\\\\Desktop\\\\MY PROJECTS\\\\Salary sheet app\" ls-files --others --ignored --exclude-standard)",
+      "Bash(npx vitest *)"
+    ]
+  }
+}

@@ -30,6 +30,10 @@ export async function deleteShift(id: string): Promise<void> {
   await db.shifts.delete(id)
 }
 
+export async function updateShift(id: string, patch: Partial<Omit<Shift, 'id' | 'createdAt'>>): Promise<void> {
+  await db.shifts.update(id, { ...patch, updatedAt: new Date().toISOString() })
+}
+
 export async function getShiftsForDate(date: string): Promise<Shift[]> {
   return db.shifts.where('date').equals(date).toArray()
 }

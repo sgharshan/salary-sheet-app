@@ -1,0 +1,100 @@
+<h2>Reports Screen</h2>
+<p class="subtitle">Select a date range, preview the summary, then export as PDF or JSON.</p>
+
+<div class="mockup" style="max-width:360px;margin:0 auto;">
+  <div class="mockup-header">Reports</div>
+  <div class="mockup-body" style="background:#0a0a0a;padding:14px;font-family:sans-serif;">
+
+    <!-- Top bar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="color:#888;font-size:18px;">☰</span>
+      <span style="color:#fff;font-size:13px;font-weight:600;">REPORTS</span>
+      <span style="width:18px;"></span>
+    </div>
+
+    <!-- Date range selector -->
+    <div style="color:#444;font-size:9px;letter-spacing:1px;margin-bottom:8px;">DATE RANGE</div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <div style="background:#6366f1;border-radius:20px;padding:6px 12px;color:#fff;font-size:10px;font-weight:600;">This Week</div>
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">This Month</div>
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">Last Month</div>
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">Custom…</div>
+    </div>
+
+    <!-- Custom range (shown when Custom selected) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="background:#161616;border-radius:8px;padding:10px;border:1px solid #222;">
+        <div style="color:#444;font-size:9px;letter-spacing:1px;">FROM</div>
+        <div style="color:#fff;font-size:12px;margin-top:2px;">28 Apr 2026</div>
+      </div>
+      <div style="background:#161616;border-radius:8px;padding:10px;border:1px solid #222;">
+        <div style="color:#444;font-size:9px;letter-spacing:1px;">TO</div>
+        <div style="color:#fff;font-size:12px;margin-top:2px;">5 May 2026</div>
+      </div>
+    </div>
+
+    <!-- Summary preview -->
+    <div style="color:#444;font-size:9px;letter-spacing:1px;margin-bottom:8px;">SUMMARY PREVIEW</div>
+    <div style="background:#161616;border-radius:10px;padding:14px;border:1px solid #222;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="color:#888;font-size:11px;">Shifts worked</span>
+        <span style="color:#fff;font-size:11px;font-weight:600;">5 shifts · 38h</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="color:#888;font-size:11px;">Total earned</span>
+        <span style="color:#4ade80;font-size:11px;font-weight:600;">£456.00</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="color:#888;font-size:11px;">Payouts received</span>
+        <span style="color:#fff;font-size:11px;font-weight:600;">£300.00</span>
+      </div>
+      <div style="border-top:1px solid #222;margin:8px 0;"></div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="color:#888;font-size:11px;">Outstanding</span>
+        <span style="color:#f87171;font-size:13px;font-weight:700;">£156.00</span>
+      </div>
+    </div>
+
+    <!-- Shift breakdown -->
+    <div style="background:#161616;border-radius:10px;overflow:hidden;border:1px solid #1e1e1e;margin-bottom:14px;">
+      <div style="padding:10px 12px;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;">
+        <div><div style="color:#fff;font-size:11px;">Mon 28 Apr</div><div style="color:#666;font-size:9px;">08:00–16:00 · 8h</div></div>
+        <div style="color:#4ade80;font-size:11px;">£96.00</div>
+      </div>
+      <div style="padding:10px 12px;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;">
+        <div><div style="color:#fff;font-size:11px;">Tue 29 Apr</div><div style="color:#666;font-size:9px;">08:00–16:00 · 8h</div></div>
+        <div style="color:#4ade80;font-size:11px;">£96.00</div>
+      </div>
+      <div style="padding:10px 12px;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;">
+        <div><div style="color:#fff;font-size:11px;">Wed 30 Apr · Morning</div><div style="color:#666;font-size:9px;">08:00–12:00 · 4h</div></div>
+        <div style="color:#4ade80;font-size:11px;">£48.00</div>
+      </div>
+      <div style="padding:10px 12px;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;">
+        <div><div style="color:#fff;font-size:11px;">Wed 30 Apr · Evening</div><div style="color:#666;font-size:9px;">18:00–22:00 · 4h</div></div>
+        <div style="color:#4ade80;font-size:11px;">£48.00</div>
+      </div>
+      <div style="padding:10px 12px;display:flex;justify-content:space-between;">
+        <div><div style="color:#fff;font-size:11px;">Fri 2 May · Payout</div><div style="color:#666;font-size:9px;">Received</div></div>
+        <div style="color:#f59e0b;font-size:11px;">-£300.00</div>
+      </div>
+    </div>
+
+    <!-- Export buttons -->
+    <div style="color:#444;font-size:9px;letter-spacing:1px;margin-bottom:8px;">EXPORT</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#6366f1;border-radius:10px;padding:14px;text-align:center;">
+        <div style="color:#fff;font-size:16px;margin-bottom:4px;">📄</div>
+        <div style="color:#fff;font-size:11px;font-weight:600;">Export PDF</div>
+        <div style="color:#a5b4fc;font-size:9px;margin-top:2px;">Print-ready report</div>
+      </div>
+      <div style="background:#161616;border-radius:10px;padding:14px;text-align:center;border:1px solid #333;">
+        <div style="color:#fff;font-size:16px;margin-bottom:4px;">{ }</div>
+        <div style="color:#fff;font-size:11px;font-weight:600;">Export JSON</div>
+        <div style="color:#666;font-size:9px;margin-top:2px;">Raw data file</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:12px;">Quick presets (This Week / This Month / Last Month / Custom) + date pickers. Live summary preview before exporting. Shift breakdown listed in chronological order with payouts interleaved. Does this cover what you need?</p>

@@ -1,0 +1,69 @@
+<h2>App Navigation — Which layout feels right?</h2>
+<p class="subtitle">Mobile-first, black theme. Pick the navigation pattern that suits how you'll use this on your phone.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:10px;padding:12px;max-width:220px;margin:0 auto;">
+        <div style="color:#888;font-size:10px;text-align:center;margin-bottom:8px">SALARY TRACKER</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#fff;font-size:11px;">📅 Today: 2 shifts logged</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#4ade80;font-size:11px;">💷 Earned this week: £284</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:14px;color:#f87171;font-size:11px;">⚠ Outstanding: £140</div>
+        <div style="display:flex;justify-content:space-around;border-top:1px solid #333;padding-top:10px;">
+          <div style="text-align:center;color:#6366f1;font-size:9px;">🏠<br>Home</div>
+          <div style="text-align:center;color:#666;font-size:9px;">📅<br>Calendar</div>
+          <div style="text-align:center;color:#666;font-size:9px;">➕<br>Log</div>
+          <div style="text-align:center;color:#666;font-size:9px;">📊<br>Reports</div>
+          <div style="text-align:center;color:#666;font-size:9px;">⚙<br>Settings</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Bottom Tab Bar</h3>
+      <p>5 tabs always visible at the bottom: Home, Calendar, Log Shift, Reports, Settings. One thumb reach to everything. Most familiar phone-app pattern.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:10px;padding:12px;max-width:220px;margin:0 auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="color:#888;font-size:10px;">SALARY TRACKER</div>
+          <div style="color:#fff;font-size:14px;">☰</div>
+        </div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#fff;font-size:11px;">📅 Today: 2 shifts logged</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#4ade80;font-size:11px;">💷 Earned this week: £284</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#f87171;font-size:11px;">⚠ Outstanding: £140</div>
+        <div style="background:#6366f1;border-radius:6px;padding:10px;text-align:center;color:#fff;font-size:11px;font-weight:bold;">+ Log Shift</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Hamburger + FAB</h3>
+      <p>Hamburger menu slides in from the side. A big floating "+ Log Shift" button always visible on screen. Cleaner look, more screen space for content.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:10px;padding:12px;max-width:220px;margin:0 auto;">
+        <div style="color:#888;font-size:10px;margin-bottom:8px;text-align:center;">SALARY TRACKER</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <div style="flex:1;background:#6366f1;border-radius:6px;padding:8px;color:#fff;font-size:10px;text-align:center;">Calendar</div>
+          <div style="flex:1;background:#222;border-radius:6px;padding:8px;color:#888;font-size:10px;text-align:center;">Reports</div>
+          <div style="flex:1;background:#222;border-radius:6px;padding:8px;color:#888;font-size:10px;text-align:center;">Settings</div>
+        </div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#fff;font-size:11px;">📅 Today: 2 shifts logged</div>
+        <div style="background:#222;border-radius:6px;padding:8px;margin-bottom:6px;color:#4ade80;font-size:11px;">💷 Earned this week: £284</div>
+        <div style="background:#6366f1;border-radius:6px;padding:10px;text-align:center;color:#fff;font-size:11px;font-weight:bold;">+ Log Shift</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Top Tab Bar + FAB</h3>
+      <p>Tabs at the top for Calendar / Reports / Settings. Large "+ Log Shift" button at the bottom. Dashboard always visible as the default view.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Click your preferred layout above, or let me know in the terminal.</p>

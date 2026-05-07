@@ -1,0 +1,175 @@
+<h2>Log Shift Screen — Time Entry Style</h2>
+<p class="subtitle">You wanted both manual entry and a rotating dial. Here's how the screen would look. The dial is the default — tap "Manual" to switch.</p>
+
+<div class="split">
+
+  <div class="mockup">
+    <div class="mockup-header">Log Shift — Dial Mode (default)</div>
+    <div class="mockup-body" style="background:#0a0a0a;padding:14px;font-family:sans-serif;min-height:500px;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <span style="color:#888;font-size:13px;">✕ Cancel</span>
+        <span style="color:#fff;font-size:13px;font-weight:600;">Log Shift</span>
+        <span style="color:#6366f1;font-size:13px;font-weight:600;">Save</span>
+      </div>
+
+      <!-- Date -->
+      <div style="background:#161616;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:#666;font-size:11px;">Date</span>
+        <span style="color:#fff;font-size:12px;">Tuesday, 5 May 2026</span>
+      </div>
+
+      <!-- Label (optional) -->
+      <div style="background:#161616;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:#666;font-size:11px;">Label <span style="color:#333;">(optional)</span></span>
+        <span style="color:#444;font-size:12px;">Morning / Evening / Night…</span>
+      </div>
+
+      <!-- Time mode toggle -->
+      <div style="display:flex;background:#161616;border-radius:8px;padding:3px;margin-bottom:14px;border:1px solid #222;">
+        <div style="flex:1;background:#6366f1;border-radius:6px;padding:8px;text-align:center;color:#fff;font-size:11px;font-weight:600;">Dial</div>
+        <div style="flex:1;padding:8px;text-align:center;color:#666;font-size:11px;">Manual</div>
+      </div>
+
+      <!-- Dial pickers -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+
+        <!-- Start time dial -->
+        <div style="flex:1;background:#161616;border-radius:10px;padding:10px;border:1px solid #222;text-align:center;">
+          <div style="color:#666;font-size:9px;letter-spacing:1px;margin-bottom:8px;">START</div>
+          <!-- Simulated scroll drum -->
+          <div style="position:relative;height:100px;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:30%;background:linear-gradient(to bottom,#161616,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(to top,#161616,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;top:50%;left:0;right:0;height:28px;margin-top:-14px;background:rgba(99,102,241,0.15);border-top:1px solid #6366f1;border-bottom:1px solid #6366f1;z-index:1;"></div>
+            <div style="text-align:center;padding-top:4px;">
+              <div style="color:#333;font-size:14px;padding:4px;">06:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">07:00</div>
+              <div style="color:#fff;font-size:16px;font-weight:700;padding:4px;position:relative;z-index:3;">08:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">09:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">10:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- End time dial -->
+        <div style="flex:1;background:#161616;border-radius:10px;padding:10px;border:1px solid #222;text-align:center;">
+          <div style="color:#666;font-size:9px;letter-spacing:1px;margin-bottom:8px;">END</div>
+          <div style="position:relative;height:100px;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:30%;background:linear-gradient(to bottom,#161616,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(to top,#161616,transparent);z-index:2;pointer-events:none;"></div>
+            <div style="position:absolute;top:50%;left:0;right:0;height:28px;margin-top:-14px;background:rgba(99,102,241,0.15);border-top:1px solid #6366f1;border-bottom:1px solid #6366f1;z-index:1;"></div>
+            <div style="text-align:center;padding-top:4px;">
+              <div style="color:#333;font-size:14px;padding:4px;">14:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">15:00</div>
+              <div style="color:#fff;font-size:16px;font-weight:700;padding:4px;position:relative;z-index:3;">16:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">17:00</div>
+              <div style="color:#333;font-size:14px;padding:4px;">18:00</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Calculated summary -->
+      <div style="background:#161616;border-radius:10px;padding:14px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">DURATION</div>
+          <div style="color:#fff;font-size:16px;font-weight:700;">8h 00m</div>
+        </div>
+        <div style="width:1px;height:30px;background:#222;"></div>
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">RATE</div>
+          <div style="color:#888;font-size:13px;">£12.00/hr</div>
+        </div>
+        <div style="width:1px;height:30px;background:#222;"></div>
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">EARNED</div>
+          <div style="color:#4ade80;font-size:16px;font-weight:700;">£96.00</div>
+        </div>
+      </div>
+
+      <!-- Add another shift -->
+      <div style="border:1px dashed #333;border-radius:10px;padding:12px;text-align:center;color:#666;font-size:11px;">+ Add another shift for this day</div>
+
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Log Shift — Manual Mode</div>
+    <div class="mockup-body" style="background:#0a0a0a;padding:14px;font-family:sans-serif;min-height:500px;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <span style="color:#888;font-size:13px;">✕ Cancel</span>
+        <span style="color:#fff;font-size:13px;font-weight:600;">Log Shift</span>
+        <span style="color:#6366f1;font-size:13px;font-weight:600;">Save</span>
+      </div>
+
+      <div style="background:#161616;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:#666;font-size:11px;">Date</span>
+        <span style="color:#fff;font-size:12px;">Tuesday, 5 May 2026</span>
+      </div>
+
+      <div style="background:#161616;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:#666;font-size:11px;">Label <span style="color:#333;">(optional)</span></span>
+        <span style="color:#444;font-size:12px;">Morning / Evening / Night…</span>
+      </div>
+
+      <!-- Mode toggle -->
+      <div style="display:flex;background:#161616;border-radius:8px;padding:3px;margin-bottom:14px;border:1px solid #222;">
+        <div style="flex:1;padding:8px;text-align:center;color:#666;font-size:11px;">Dial</div>
+        <div style="flex:1;background:#6366f1;border-radius:6px;padding:8px;text-align:center;color:#fff;font-size:11px;font-weight:600;">Manual</div>
+      </div>
+
+      <!-- Manual time inputs -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:#161616;border-radius:10px;padding:14px;border:1px solid #6366f1;">
+          <div style="color:#666;font-size:9px;letter-spacing:1px;margin-bottom:6px;">START TIME</div>
+          <div style="color:#fff;font-size:22px;font-weight:700;letter-spacing:2px;">08:00</div>
+          <div style="color:#444;font-size:9px;margin-top:4px;">tap to edit</div>
+        </div>
+        <div style="background:#161616;border-radius:10px;padding:14px;border:1px solid #222;">
+          <div style="color:#666;font-size:9px;letter-spacing:1px;margin-bottom:6px;">END TIME</div>
+          <div style="color:#fff;font-size:22px;font-weight:700;letter-spacing:2px;">16:00</div>
+          <div style="color:#444;font-size:9px;margin-top:4px;">tap to edit</div>
+        </div>
+      </div>
+
+      <!-- Quick presets -->
+      <div style="color:#444;font-size:9px;letter-spacing:1px;margin-bottom:8px;">QUICK PRESETS</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">08:00–16:00</div>
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">09:00–17:00</div>
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">18:00–22:00</div>
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:6px 12px;color:#888;font-size:10px;">22:00–06:00</div>
+      </div>
+
+      <!-- Calculated summary -->
+      <div style="background:#161616;border-radius:10px;padding:14px;border:1px solid #222;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">DURATION</div>
+          <div style="color:#fff;font-size:16px;font-weight:700;">8h 00m</div>
+        </div>
+        <div style="width:1px;height:30px;background:#222;"></div>
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">RATE</div>
+          <div style="color:#888;font-size:13px;">£12.00/hr</div>
+        </div>
+        <div style="width:1px;height:30px;background:#222;"></div>
+        <div>
+          <div style="color:#666;font-size:9px;letter-spacing:1px;">EARNED</div>
+          <div style="color:#4ade80;font-size:16px;font-weight:700;">£96.00</div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div style="background:#161616;border-radius:10px;padding:12px;border:1px solid #222;">
+        <div style="color:#444;font-size:10px;">Notes (optional)…</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:12px;">Left = scroll drum dial (swipe up/down to pick time). Right = manual tap-to-type with quick presets for common shifts. Both show live duration + pay calculation. Does this work for you?</p>

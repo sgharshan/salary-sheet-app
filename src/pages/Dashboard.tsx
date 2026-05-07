@@ -1,16 +1,21 @@
+import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/database'
 import { useSettings } from '../hooks/useSettings'
 import { calcShiftPay } from '../lib/calculations'
 import { calcOutstanding } from '../lib/calculations'
 import { weekStart, weekEnd, monthStart, monthEnd, today } from '../lib/dateHelpers'
+import { deleteShift } from '../hooks/useShifts'
 import SummaryCards from '../components/dashboard/SummaryCards'
 import RecentShiftsList from '../components/dashboard/RecentShiftsList'
+import LogShiftModal from '../components/shifts/LogShiftModal'
+import type { Shift } from '../types'
 
 export default function Dashboard() {
   const settings = useSettings()
   const symbol = settings?.currencySymbol ?? '£'
   const todayStr = today()
+  const [editingShift, setEditingShift] = useState<Shift | null>(null)
 
   const weekShifts = useLiveQuery(() =>
     db.shifts.where('date').between(weekStart(todayStr), weekEnd(todayStr), true, true).toArray()
@@ -20,7 +25,7 @@ export default function Dashboard() {
     db.shifts.where('date').between(monthStart(todayStr), monthEnd(todayStr), true, true).toArray()
   , [todayStr]) ?? []
 
-  const allShifts = useLiveQuery(() => db.shifts.toArray()) ?? []
+  const allShifts = useLiveQuery(() => db.shifts.orderBy('date').reverse().toArray()) ?? []
   const allPayouts = useLiveQuery(() => db.payouts.orderBy('date').reverse().toArray()) ?? []
 
   const weekEarned = weekShifts.reduce((s, sh) => s + calcShiftPay(sh.startTime, sh.endTime, sh.hourlyRateSnapshot), 0)
@@ -41,7 +46,18 @@ export default function Dashboard() {
         symbol={symbol}
       />
       <div className="text-[#444] text-[9px] tracking-widest mb-3">RECENT SHIFTS</div>
-      <RecentShiftsList shifts={allShifts.slice(0, 10)} symbol={symbol} />
+      <RecentShiftsList
+        shifts={allShifts.slice(0, 10)}
+        symbol={symbol}
+        onEditShift={setEditingShift}
+        onDeleteShift={deleteShift}
+      />
+
+      <LogShiftModal
+        open={!!editingShift}
+        onClose={() => setEditingShift(null)}
+        editShift={editingShift}
+      />
     </div>
   )
 }
