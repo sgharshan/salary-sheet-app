@@ -4,11 +4,13 @@ import { useSettings, updateHourlyRate, updateSettings } from '../hooks/useSetti
 import { formatDisplayDate } from '../lib/dateHelpers'
 
 interface OutletCtx {
-  connect: () => void
-  sync: () => void
+  connect: () => Promise<void>
+  sync: () => Promise<void>
   disconnect: () => void
   connected: boolean
 }
+
+const CLIENT_CONFIGURED = !!import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 export default function SettingsPage() {
   const { connect, sync, disconnect, connected } = useOutletContext<OutletCtx>()
@@ -16,6 +18,12 @@ export default function SettingsPage() {
   const [rateInput, setRateInput] = useState('')
   const [editing, setEditing] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [connecting, setConnecting] = useState(false)
+
+  async function handleConnect() {
+    setConnecting(true)
+    try { await connect() } finally { setConnecting(false) }
+  }
 
   if (!settings) return null
   const symbol = settings.currencySymbol
@@ -128,12 +136,19 @@ export default function SettingsPage() {
             <div className="text-[#888] text-xs mb-3">
               Back up your data automatically to Google Drive. Syncs every 5 minutes when online.
             </div>
-            <button
-              onClick={connect}
-              className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold"
-            >
-              Connect Google Drive
-            </button>
+            {CLIENT_CONFIGURED ? (
+              <button
+                onClick={handleConnect}
+                disabled={connecting}
+                className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold disabled:opacity-50"
+              >
+                {connecting ? 'Opening Google…' : 'Connect Google Drive'}
+              </button>
+            ) : (
+              <div className="text-red-400 text-xs bg-red-400/10 rounded-lg px-3 py-2">
+                Google Client ID not configured. Add VITE_GOOGLE_CLIENT_ID to GitHub Secrets and rebuild.
+              </div>
+            )}
           </>
         )}
       </div>
