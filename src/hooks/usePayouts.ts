@@ -25,6 +25,10 @@ export async function deletePayout(id: string): Promise<void> {
   await db.payouts.delete(id)
 }
 
+export async function updatePayout(id: string, patch: Partial<Omit<Payout, 'id' | 'createdAt'>>): Promise<void> {
+  await db.payouts.update(id, { ...patch, updatedAt: new Date().toISOString() })
+}
+
 export async function getAllPayouts(): Promise<Payout[]> {
   return db.payouts.orderBy('date').toArray()
 }

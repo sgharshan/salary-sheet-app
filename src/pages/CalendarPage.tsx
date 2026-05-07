@@ -5,9 +5,11 @@ import { useSettings } from '../hooks/useSettings'
 import CalendarGrid from '../components/calendar/CalendarGrid'
 import DayDetailPanel from '../components/calendar/DayDetailPanel'
 import LogShiftModal from '../components/shifts/LogShiftModal'
+import LogPayoutModal from '../components/payouts/LogPayoutModal'
 import { deleteShift } from '../hooks/useShifts'
+import { deletePayout } from '../hooks/usePayouts'
 import { toISODate } from '../lib/dateHelpers'
-import type { Shift } from '../types'
+import type { Shift, Payout } from '../types'
 
 export default function CalendarPage() {
   const now = new Date()
@@ -15,6 +17,7 @@ export default function CalendarPage() {
   const [month, setMonth] = useState(now.getMonth())
   const [selectedDate, setSelectedDate] = useState<string | null>(toISODate(now))
   const [editingShift, setEditingShift] = useState<Shift | null>(null)
+  const [editingPayout, setEditingPayout] = useState<Payout | null>(null)
   const settings = useSettings()
   const symbol = settings?.currencySymbol ?? '£'
 
@@ -72,6 +75,8 @@ export default function CalendarPage() {
           symbol={symbol}
           onEditShift={setEditingShift}
           onDeleteShift={deleteShift}
+          onEditPayout={setEditingPayout}
+          onDeletePayout={deletePayout}
         />
       )}
 
@@ -79,6 +84,11 @@ export default function CalendarPage() {
         open={!!editingShift}
         onClose={() => setEditingShift(null)}
         editShift={editingShift}
+      />
+      <LogPayoutModal
+        open={!!editingPayout}
+        onClose={() => setEditingPayout(null)}
+        editPayout={editingPayout}
       />
     </div>
   )

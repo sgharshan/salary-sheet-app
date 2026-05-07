@@ -1,18 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Modal from '../ui/Modal'
-import { addPayout } from '../../hooks/usePayouts'
+import { addPayout, updatePayout } from '../../hooks/usePayouts'
 import { useSettings } from '../../hooks/useSettings'
 import { today } from '../../lib/dateHelpers'
+import type { Payout } from '../../types'
 
-interface Props { open: boolean; onClose: () => void }
+interface Props {
+  open: boolean
+  onClose: () => void
+  editPayout?: Payout | null
+}
 
-export default function LogPayoutModal({ open, onClose }: Props) {
+export default function LogPayoutModal({ open, onClose, editPayout }: Props) {
   const settings = useSettings()
   const symbol = settings?.currencySymbol ?? '£'
   const [date, setDate] = useState(today())
   const [amount, setAmount] = useState('')
   const [notes, setNotes] = useState('')
   const [saving, setSaving] = useState(false)
+
+  const isEditing = !!editPayout
+
+  useEffect(() => {
+    if (editPayout) {
+      setDate(editPayout.date)
+      setAmount(editPayout.amount.toString())
+      setNotes(editPayout.notes)
+    } else {
+      setDate(today())
+      setAmount('')
+      setNotes('')
+    }
+  }, [editPayout, open])
 
   function reset() { setDate(today()); setAmount(''); setNotes('') }
 
@@ -21,7 +40,11 @@ export default function LogPayoutModal({ open, onClose }: Props) {
     if (isNaN(num) || num <= 0) return
     setSaving(true)
     try {
-      await addPayout({ date, amount: num, notes })
+      if (isEditing && editPayout) {
+        await updatePayout(editPayout.id, { date, amount: num, notes })
+      } else {
+        await addPayout({ date, amount: num, notes })
+      }
       reset()
       onClose()
     } finally {
@@ -30,7 +53,7 @@ export default function LogPayoutModal({ open, onClose }: Props) {
   }
 
   return (
-    <Modal open={open} onClose={() => { reset(); onClose() }} title="Log Payout">
+    <Modal open={open} onClose={() => { reset(); onClose() }} title={isEditing ? 'Edit Payout' : 'Log Payout'}>
       <div className="flex justify-end -mt-10 mb-6">
         <button
           onClick={handleSave}
