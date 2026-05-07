@@ -10,7 +10,7 @@ export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [shiftOpen, setShiftOpen] = useState(false)
   const [payoutOpen, setPayoutOpen] = useState(false)
-  const { status, sync } = useSync()
+  const { status, connected, connect, sync, disconnect } = useSync()
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -18,7 +18,7 @@ export default function AppShell() {
       <div className="flex justify-between items-center px-4 py-4 sticky top-0 bg-[#0a0a0a] z-30">
         <button onClick={() => setMenuOpen(true)} className="text-white text-xl">☰</button>
         <span className="text-[#555] text-xs tracking-widest font-semibold">SHIFTLOG</span>
-        <SyncIndicator status={status === 'error' ? 'offline' : status} />
+        <SyncIndicator status={status} />
       </div>
 
       <HamburgerMenu
@@ -29,7 +29,7 @@ export default function AppShell() {
 
       {/* Page content */}
       <main className="px-4 pb-32">
-        <Outlet context={{ openLogShift: () => setShiftOpen(true), sync }} />
+        <Outlet context={{ openLogShift: () => setShiftOpen(true), sync, connect, disconnect, connected }} />
       </main>
 
       {/* Floating Action Button */}

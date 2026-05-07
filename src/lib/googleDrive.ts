@@ -12,6 +12,11 @@ export interface DriveData {
 
 let tokenClient: google.accounts.oauth2.TokenClient | null = null
 let accessToken: string | null = null
+let tokenExpiry = 0  // epoch ms when current token expires
+
+export function hasValidToken(): boolean {
+  return !!accessToken && Date.now() < tokenExpiry
+}
 
 export function loadGsiScript(): Promise<void> {
   return new Promise(resolve => {
@@ -25,6 +30,7 @@ export function loadGsiScript(): Promise<void> {
 }
 
 export async function initTokenClient(clientId: string): Promise<void> {
+  if (tokenClient) return
   await loadGsiScript()
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: clientId,
@@ -33,15 +39,18 @@ export async function initTokenClient(clientId: string): Promise<void> {
   })
 }
 
-export function requestAccessToken(): Promise<string> {
+// interactive=true  → shows account picker (first connect)
+// interactive=false → silent attempt (auto-sync)
+export function requestAccessToken(interactive = false): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (!tokenClient) { reject(new Error('Token client not initialised')); return }
+    if (!tokenClient) { reject(new Error('Not initialised')); return }
     tokenClient.callback = (resp) => {
-      if (resp.error) { reject(resp); return }
+      if (resp.error) { reject(new Error(resp.error)); return }
       accessToken = resp.access_token
+      tokenExpiry = Date.now() + 55 * 60 * 1000   // tokens last 1h, refresh at 55m
       resolve(resp.access_token)
     }
-    tokenClient.requestAccessToken({ prompt: '' })
+    tokenClient.requestAccessToken({ prompt: interactive ? 'select_account' : '' })
   })
 }
 

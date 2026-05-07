@@ -3,8 +3,15 @@ import { useOutletContext } from 'react-router-dom'
 import { useSettings, updateHourlyRate, updateSettings } from '../hooks/useSettings'
 import { formatDisplayDate } from '../lib/dateHelpers'
 
+interface OutletCtx {
+  connect: () => void
+  sync: () => void
+  disconnect: () => void
+  connected: boolean
+}
+
 export default function SettingsPage() {
-  const { sync } = useOutletContext<{ sync: () => void }>()
+  const { connect, sync, disconnect, connected } = useOutletContext<OutletCtx>()
   const settings = useSettings()
   const [rateInput, setRateInput] = useState('')
   const [editing, setEditing] = useState(false)
@@ -27,6 +34,7 @@ export default function SettingsPage() {
     <div>
       <div className="text-[#444] text-[9px] tracking-widest mb-4 pt-2">SETTINGS</div>
 
+      {/* Hourly rate */}
       <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
         <div className="text-[#666] text-[9px] tracking-widest mb-2">HOURLY RATE</div>
         {editing ? (
@@ -56,6 +64,7 @@ export default function SettingsPage() {
         )}
       </div>
 
+      {/* Rate history */}
       {settings.rateHistory.length > 0 && (
         <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
           <div className="text-[#666] text-[9px] tracking-widest mb-2">RATE HISTORY</div>
@@ -68,6 +77,7 @@ export default function SettingsPage() {
         </div>
       )}
 
+      {/* Currency */}
       <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
         <div className="text-[#666] text-[9px] tracking-widest mb-2">CURRENCY</div>
         <div className="flex gap-3">
@@ -83,14 +93,48 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Google Drive Sync */}
       <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-        <div className="text-[#666] text-[9px] tracking-widest mb-2">GOOGLE DRIVE SYNC</div>
-        <div className="text-[#888] text-xs mb-3">Connect to automatically back up your data to Google Drive.</div>
-        <button onClick={sync} className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-2 text-white text-sm font-semibold">
-          Connect Google Drive
-        </button>
-        {settings.lastSyncedAt && (
-          <div className="text-[#555] text-xs mt-2">Last synced: {formatDisplayDate(settings.lastSyncedAt.slice(0, 10))}</div>
+        <div className="text-[#666] text-[9px] tracking-widest mb-3">GOOGLE DRIVE SYNC</div>
+        {connected ? (
+          <>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-green-400" />
+              <span className="text-green-400 text-sm font-semibold">Connected</span>
+            </div>
+            {settings.lastSyncedAt && (
+              <div className="text-[#555] text-xs mb-3">
+                Last synced: {formatDisplayDate(settings.lastSyncedAt.slice(0, 10))}
+                {' '}at {new Date(settings.lastSyncedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={sync}
+                className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold"
+              >
+                Sync Now
+              </button>
+              <button
+                onClick={disconnect}
+                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-2 text-[#666] text-sm"
+              >
+                Disconnect
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-[#888] text-xs mb-3">
+              Back up your data automatically to Google Drive. Syncs every 5 minutes when online.
+            </div>
+            <button
+              onClick={connect}
+              className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold"
+            >
+              Connect Google Drive
+            </button>
+          </>
         )}
       </div>
 
