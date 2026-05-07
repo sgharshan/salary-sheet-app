@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import { useSettings, updateHourlyRate, updateSettings } from '../hooks/useSettings'
 import { formatDisplayDate } from '../lib/dateHelpers'
 
 export default function SettingsPage() {
+  const { sync } = useOutletContext<{ sync: () => void }>()
   const settings = useSettings()
   const [rateInput, setRateInput] = useState('')
   const [editing, setEditing] = useState(false)
@@ -84,7 +86,7 @@ export default function SettingsPage() {
       <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
         <div className="text-[#666] text-[9px] tracking-widest mb-2">GOOGLE DRIVE SYNC</div>
         <div className="text-[#888] text-xs mb-3">Connect to automatically back up your data to Google Drive.</div>
-        <button className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-2 text-white text-sm font-semibold">
+        <button onClick={sync} className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-2 text-white text-sm font-semibold">
           Connect Google Drive
         </button>
         {settings.lastSyncedAt && (
