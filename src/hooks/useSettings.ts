@@ -11,25 +11,22 @@ export function useSettings() {
 export async function updateHourlyRate(newRate: number): Promise<void> {
   const s = await db.settings.get(1)
   if (!s) return
-  const history = [
-    ...s.rateHistory,
-    { rate: s.currentHourlyRate, effectiveFrom: s.rateHistory.length === 0 ? '2000-01-01' : today() },
-  ]
-  await db.settings.update(1, {
-    currentHourlyRate: newRate,
-    rateHistory: history,
-  })
+  // Only archive the old rate if it was a real non-zero rate (skip archiving the initial 0 default)
+  const history =
+    s.currentHourlyRate > 0
+      ? [...s.rateHistory, { rate: s.currentHourlyRate, effectiveFrom: today() }]
+      : s.rateHistory
+  await db.settings.update(1, { currentHourlyRate: newRate, rateHistory: history })
 }
 
 export async function getRateForDate(date: string): Promise<number> {
   const s = await db.settings.get(1)
   if (!s) return 0
-  // Find the most recent rate entry effective on or before the given date
-  const applicable = [...s.rateHistory]
-    .filter(r => r.effectiveFrom <= date)
-    .sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom))
-  if (applicable.length > 0) return applicable[0].rate
-  return s.currentHourlyRate
+  const sorted = [...s.rateHistory].sort((a, b) => a.effectiveFrom.localeCompare(b.effectiveFrom))
+  const applicable = sorted.filter(r => r.effectiveFrom <= date)
+  if (applicable.length > 0) return applicable[applicable.length - 1].rate
+  // Date is before all history entries — use oldest known rate, or current as last resort
+  return sorted.length > 0 ? sorted[0].rate : s.currentHourlyRate
 }
 
 export async function updateSettings(patch: Partial<Settings>): Promise<void> {

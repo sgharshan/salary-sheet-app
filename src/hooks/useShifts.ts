@@ -6,8 +6,12 @@ import { calcShiftPay } from '../lib/calculations'
 
 export function useShifts(fromDate?: string, toDate?: string) {
   const shifts = useLiveQuery(async () => {
-    if (fromDate && toDate) {
-      return db.shifts.where('date').between(fromDate, toDate, true, true).reverse().toArray()
+    if (fromDate) {
+      return db.shifts
+        .where('date')
+        .between(fromDate, toDate ?? '9999-12-31', true, true)
+        .reverse()
+        .toArray()
     }
     return db.shifts.orderBy('date').reverse().toArray()
   }, [fromDate, toDate])
