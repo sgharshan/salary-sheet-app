@@ -27,7 +27,7 @@ export default function AppShell() {
 
       {/* Page content */}
       <main className="px-4 pb-32">
-        <Outlet />
+        <Outlet context={{ openLogShift: () => setShiftOpen(true) }} />
       </main>
 
       {/* Floating Action Button */}

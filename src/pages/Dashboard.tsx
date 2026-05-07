@@ -20,10 +20,6 @@ export default function Dashboard() {
     db.shifts.where('date').between(monthStart(todayStr), monthEnd(todayStr), true, true).toArray()
   , [todayStr]) ?? []
 
-  const recentShifts = useLiveQuery(() =>
-    db.shifts.orderBy('date').reverse().limit(10).toArray()
-  ) ?? []
-
   const allShifts = useLiveQuery(() => db.shifts.toArray()) ?? []
   const allPayouts = useLiveQuery(() => db.payouts.orderBy('date').reverse().toArray()) ?? []
 
@@ -45,7 +41,7 @@ export default function Dashboard() {
         symbol={symbol}
       />
       <div className="text-[#444] text-[9px] tracking-widest mb-3">RECENT SHIFTS</div>
-      <RecentShiftsList shifts={recentShifts} symbol={symbol} />
+      <RecentShiftsList shifts={allShifts.slice(0, 10)} symbol={symbol} />
     </div>
   )
 }
