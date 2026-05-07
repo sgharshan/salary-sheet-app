@@ -46,7 +46,7 @@ export default function DialPicker({ label, value, onChange }: Props) {
   const hourRef = useRef<HTMLDivElement>(null)
   const minRef = useRef<HTMLDivElement>(null)
 
-  function scrollTo(ref: React.RefObject<HTMLDivElement>, index: number) {
+  function scrollTo(ref: React.RefObject<HTMLDivElement | null>, index: number) {
     ref.current?.scrollTo({ top: index * ITEM_HEIGHT, behavior: 'smooth' })
   }
 
