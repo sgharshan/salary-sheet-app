@@ -6,7 +6,7 @@ function timeToMinutes(time: string): number {
 export function calcHoursWorked(startTime: string, endTime: string): number {
   let startMins = timeToMinutes(startTime)
   let endMins = timeToMinutes(endTime)
-  if (endMins <= startMins) endMins += 24 * 60 // overnight
+  if (endMins < startMins) endMins += 24 * 60 // overnight (equal times = 0 duration)
   return (endMins - startMins) / 60
 }
 

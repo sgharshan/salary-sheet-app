@@ -22,7 +22,11 @@ describe('calcShiftPay', () => {
     expect(calcShiftPay('08:00', '16:00', 12)).toBe(96)
   })
   it('rounds to 2 decimal places', () => {
-    expect(calcShiftPay('08:00', '09:20', 12)).toBe(16)
+    // 10 min at £10/hr = 1/6 * 10 = 1.6666... -> 1.67
+    expect(calcShiftPay('08:00', '08:10', 10)).toBe(1.67)
+  })
+  it('equal start and end time produces 0 hours', () => {
+    expect(calcHoursWorked('08:00', '08:00')).toBe(0)
   })
 })
 

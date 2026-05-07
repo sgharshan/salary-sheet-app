@@ -25,9 +25,11 @@ export function weekStart(isoDate: string): string {
 }
 
 export function weekEnd(isoDate: string): string {
-  const start = new Date(weekStart(isoDate))
-  start.setDate(start.getDate() + 6)
-  return toISODate(start)
+  const ws = weekStart(isoDate)
+  const [y, m, d] = ws.split('-').map(Number)
+  const date = new Date(y, m - 1, d) // local midnight, not UTC
+  date.setDate(date.getDate() + 6)
+  return toISODate(date)
 }
 
 export function monthStart(isoDate: string): string {
