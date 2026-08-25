@@ -11,6 +11,12 @@ export function formatDisplayDate(isoDate: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+export function formatDisplayDateWithWeekday(isoDate: string): string {
+  const [y, m, day] = isoDate.split('-').map(Number)
+  const d = new Date(y, m - 1, day)
+  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 export function formatDisplayTime(time: string): string {
   return time
 }
