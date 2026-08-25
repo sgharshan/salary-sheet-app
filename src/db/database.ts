@@ -13,6 +13,19 @@ class ShiftLogDB extends Dexie {
       payouts: 'id, date, createdAt',
       settings: 'id',
     })
+    this.version(2).stores({
+      shifts:  'id, date, createdAt',
+      payouts: 'id, date, createdAt',
+      settings: 'id',
+    }).upgrade(async tx => {
+      await tx.table('settings').toCollection().modify(s => {
+        if (s.stores === undefined) s.stores = []
+        if (s.defaultStoreId === undefined) s.defaultStoreId = null
+      })
+      await tx.table('shifts').toCollection().modify(s => {
+        if (s.storeName === undefined) s.storeName = ''
+      })
+    })
   }
 }
 
@@ -27,6 +40,8 @@ export async function initSettings(): Promise<void> {
       currencySymbol: '£',
       currentHourlyRate: 0,
       rateHistory: [],
+      stores: [],
+      defaultStoreId: null,
       lastSyncedAt: null,
       googleAccessToken: null,
       googleTokenExpiry: null,
