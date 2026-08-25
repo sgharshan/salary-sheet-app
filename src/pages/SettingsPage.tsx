@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { useSettings, updateHourlyRate, updateSettings } from '../hooks/useSettings'
+import { useSettings, updateHourlyRate, updateSettings, addStore, deleteStore, setDefaultStore } from '../hooks/useSettings'
 import { formatDisplayDate } from '../lib/dateHelpers'
 
 interface OutletCtx {
@@ -19,10 +19,18 @@ export default function SettingsPage() {
   const [editing, setEditing] = useState(false)
   const [saved, setSaved] = useState(false)
   const [connecting, setConnecting] = useState(false)
+  const [storeInput, setStoreInput] = useState('')
 
   async function handleConnect() {
     setConnecting(true)
     try { await connect() } finally { setConnecting(false) }
+  }
+
+  async function handleAddStore() {
+    const name = storeInput.trim()
+    if (!name) return
+    await addStore(name)
+    setStoreInput('')
   }
 
   if (!settings) return null
@@ -84,6 +92,38 @@ export default function SettingsPage() {
           ))}
         </div>
       )}
+
+      {/* Stores */}
+      <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
+        <div className="text-[#666] text-[9px] tracking-widest mb-3">STORES</div>
+        <div className="flex gap-3 mb-3">
+          <input
+            type="text"
+            placeholder="Store name"
+            value={storeInput}
+            onChange={e => setStoreInput(e.target.value)}
+            className="flex-1 bg-[#111] border border-[#333] rounded-lg px-3 py-2 text-white text-sm outline-none"
+          />
+          <button onClick={handleAddStore} className="bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Add</button>
+        </div>
+        {settings.stores.length === 0 ? (
+          <div className="text-[#444] text-xs">No stores added yet</div>
+        ) : (
+          settings.stores.map(store => (
+            <div key={store.id} className="flex justify-between items-center mb-2 last:mb-0">
+              <span className="text-white text-sm">{store.name}</span>
+              <div className="flex items-center gap-3">
+                {settings.defaultStoreId === store.id ? (
+                  <span className="text-indigo-400 text-xs font-semibold">Default</span>
+                ) : (
+                  <button onClick={() => setDefaultStore(store.id)} className="text-[#666] text-xs">Set default</button>
+                )}
+                <button onClick={() => deleteStore(store.id)} className="text-red-400 text-xs">Delete</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
       {/* Currency */}
       <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
