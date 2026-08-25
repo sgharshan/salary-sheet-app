@@ -12,16 +12,18 @@ interface Props {
   editShift?: Shift | null
 }
 
-const blankDraft = (): ShiftDraft => ({ startTime: '08:00', endTime: '16:00', label: '', notes: '' })
+const blankDraft = (storeName: string): ShiftDraft => ({ startTime: '08:00', endTime: '16:00', label: '', notes: '', storeName })
 
 export default function LogShiftModal({ open, onClose, editShift }: Props) {
   const settings = useSettings()
   const [date, setDate] = useState(today())
-  const [drafts, setDrafts] = useState<ShiftDraft[]>([blankDraft()])
+  const [drafts, setDrafts] = useState<ShiftDraft[]>([blankDraft('')])
   const [saving, setSaving] = useState(false)
 
   const rate = settings?.currentHourlyRate ?? 0
   const symbol = settings?.currencySymbol ?? '£'
+  const stores = settings?.stores ?? []
+  const defaultStoreName = stores.find(s => s.id === settings?.defaultStoreId)?.name ?? ''
   const isEditing = !!editShift
 
   useEffect(() => {
@@ -32,16 +34,18 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
         endTime: editShift.endTime,
         label: editShift.label,
         notes: editShift.notes,
+        storeName: editShift.storeName,
       }])
     } else {
       setDate(today())
-      setDrafts([blankDraft()])
+      setDrafts([blankDraft(defaultStoreName)])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editShift, open])
 
   function reset() {
     setDate(today())
-    setDrafts([blankDraft()])
+    setDrafts([blankDraft(defaultStoreName)])
   }
 
   async function handleSave() {
@@ -56,6 +60,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
           endTime: d.endTime,
           label: d.label,
           notes: d.notes,
+          storeName: d.storeName,
           hourlyRateSnapshot: snapshotRate || rate,
         })
       } else {
@@ -67,6 +72,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
             endTime: d.endTime,
             label: d.label,
             notes: d.notes,
+            storeName: d.storeName,
             hourlyRateSnapshot: snapshotRate || rate,
           })
         }
@@ -112,6 +118,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
           draft={d}
           rate={rate}
           symbol={symbol}
+          stores={stores}
           onChange={updated => updateDraft(i, updated)}
           onRemove={i > 0 ? () => setDrafts(prev => prev.filter((_, idx) => idx !== i)) : undefined}
         />
@@ -119,7 +126,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
 
       {!isEditing && (
         <button
-          onClick={() => setDrafts(prev => [...prev, blankDraft()])}
+          onClick={() => setDrafts(prev => [...prev, blankDraft(defaultStoreName)])}
           className="w-full border border-dashed border-[#333] rounded-xl py-3 text-[#666] text-sm mt-2"
         >
           + Add another shift for this day

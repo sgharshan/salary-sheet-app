@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DialPicker from '../ui/DialPicker'
 import { calcHoursWorked, calcShiftPay } from '../../lib/calculations'
+import type { Store } from '../../types'
 
 const PRESETS = ['08:00–16:00', '09:00–17:00', '18:00–22:00', '22:00–06:00']
 
@@ -9,19 +10,22 @@ export interface ShiftDraft {
   endTime: string
   label: string
   notes: string
+  storeName: string
 }
 
 interface Props {
   draft: ShiftDraft
   rate: number
   symbol: string
+  stores: Store[]
   onChange: (d: ShiftDraft) => void
   onRemove?: () => void
   index: number
 }
 
-export default function ShiftFormRow({ draft, rate, symbol, onChange, onRemove, index }: Props) {
+export default function ShiftFormRow({ draft, rate, symbol, stores, onChange, onRemove, index }: Props) {
   const [mode, setMode] = useState<'dial' | 'manual'>('dial')
+  const [advancedOpen, setAdvancedOpen] = useState(false)
   const hours = calcHoursWorked(draft.startTime, draft.endTime)
   const pay = calcShiftPay(draft.startTime, draft.endTime, rate)
 
@@ -46,6 +50,31 @@ export default function ShiftFormRow({ draft, rate, symbol, onChange, onRemove, 
         value={draft.label}
         onChange={e => onChange({ ...draft, label: e.target.value })}
       />
+
+      {/* Advanced options: override store for this shift */}
+      {stores.length > 0 && (
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setAdvancedOpen(o => !o)}
+            className="text-[#666] text-xs mb-2"
+          >
+            {advancedOpen ? '▾' : '▸'} Advanced options
+          </button>
+          {advancedOpen && (
+            <select
+              value={draft.storeName}
+              onChange={e => onChange({ ...draft, storeName: e.target.value })}
+              className="w-full bg-[#161616] border border-[#222] rounded-xl px-4 py-3 text-white text-sm outline-none"
+            >
+              <option value="">No store</option>
+              {stores.map(store => (
+                <option key={store.id} value={store.name}>{store.name}</option>
+              ))}
+            </select>
+          )}
+        </div>
+      )}
 
       {/* Mode toggle */}
       <div className="flex bg-[#161616] rounded-lg p-1 mb-4 border border-[#222]">
