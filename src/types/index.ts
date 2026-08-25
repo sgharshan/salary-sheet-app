@@ -3,6 +3,11 @@ export interface RateEntry {
   effectiveFrom: string // ISO date 'YYYY-MM-DD'
 }
 
+export interface Store {
+  id: string
+  name: string
+}
+
 export interface Shift {
   id: string
   date: string         // 'YYYY-MM-DD'
@@ -10,6 +15,7 @@ export interface Shift {
   endTime: string      // 'HH:MM'
   label: string        // '' if none
   notes: string
+  storeName: string    // '' if none. Snapshot of the store's name at save time.
   hourlyRateSnapshot: number
   createdAt: string    // ISO datetime
   updatedAt: string
@@ -30,6 +36,8 @@ export interface Settings {
   currencySymbol: string // '£'
   currentHourlyRate: number
   rateHistory: RateEntry[]
+  stores: Store[]
+  defaultStoreId: string | null
   lastSyncedAt: string | null
   googleAccessToken: string | null
   googleTokenExpiry: number | null  // Unix ms
