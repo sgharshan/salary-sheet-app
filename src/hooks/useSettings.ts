@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { v4 as uuid } from 'uuid'
 import { db } from '../db/database'
-import type { Settings } from '../types'
+import type { Settings, Shift } from '../types'
 import { today } from '../lib/dateHelpers'
 
 export function useSettings() {
@@ -31,4 +32,45 @@ export async function getRateForDate(date: string): Promise<number> {
 
 export async function updateSettings(patch: Partial<Settings>): Promise<void> {
   await db.settings.update(1, patch)
+}
+
+export async function addStore(name: string): Promise<void> {
+  const s = await db.settings.get(1)
+  if (!s) return
+  await db.settings.update(1, { stores: [...s.stores, { id: uuid(), name }] })
+}
+
+export async function renameStore(id: string, name: string): Promise<void> {
+  const s = await db.settings.get(1)
+  if (!s) return
+  const stores = s.stores.map(store => store.id === id ? { ...store, name } : store)
+  await db.settings.update(1, { stores })
+}
+
+export async function deleteStore(id: string): Promise<void> {
+  const s = await db.settings.get(1)
+  if (!s) return
+  const stores = s.stores.filter(store => store.id !== id)
+  const defaultStoreId = s.defaultStoreId === id ? null : s.defaultStoreId
+  await db.settings.update(1, { stores, defaultStoreId })
+}
+
+// Exported for unit testing: which shifts should be stamped with the store
+// name when a default store is (re)assigned. Only shifts that have never
+// had an explicit store (empty storeName) are eligible — shifts that
+// already carry a snapshot name are never touched.
+export function shiftIdsNeedingBackfill(shifts: Shift[]): string[] {
+  return shifts.filter(s => !s.storeName).map(s => s.id)
+}
+
+export async function setDefaultStore(id: string): Promise<void> {
+  const s = await db.settings.get(1)
+  if (!s) return
+  const store = s.stores.find(st => st.id === id)
+  if (!store) return
+  await db.settings.update(1, { defaultStoreId: id })
+
+  const allShifts = await db.shifts.toArray()
+  const idsToBackfill = shiftIdsNeedingBackfill(allShifts)
+  await Promise.all(idsToBackfill.map(shiftId => db.shifts.update(shiftId, { storeName: store.name })))
 }
