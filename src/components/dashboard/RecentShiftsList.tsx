@@ -22,7 +22,11 @@ export default function RecentShiftsList({ shifts, symbol, onEditShift, onDelete
         const row = (
           <div className={`flex justify-between items-center px-4 py-3 ${i < shifts.length - 1 ? 'border-b border-[#1e1e1e]' : ''}`}>
             <div>
-              <div className="text-white text-sm">{formatDisplayDateWithWeekday(s.date)}{s.label ? ` · ${s.label}` : ''}</div>
+              <div className="text-white text-sm">
+                {formatDisplayDateWithWeekday(s.date)}
+                {s.label ? ` · ${s.label}` : ''}
+                {s.storeName ? ` · ${s.storeName}` : ''}
+              </div>
               <div className="text-[#666] text-xs">{s.startTime} – {s.endTime} · {hrs.toFixed(1)}h</div>
             </div>
             <div className="text-green-400 font-semibold text-sm">{symbol}{pay.toFixed(2)}</div>

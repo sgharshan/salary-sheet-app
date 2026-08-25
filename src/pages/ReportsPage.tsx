@@ -115,7 +115,11 @@ export default function ReportsPage() {
                 {item.type === 'shift' ? (
                   <>
                     <div>
-                      <div className="text-white text-sm">{formatDisplayDateWithWeekday(item.date)}{(item.data as Shift).label ? ` · ${(item.data as Shift).label}` : ''}</div>
+                      <div className="text-white text-sm">
+                        {formatDisplayDateWithWeekday(item.date)}
+                        {(item.data as Shift).label ? ` · ${(item.data as Shift).label}` : ''}
+                        {(item.data as Shift).storeName ? ` · ${(item.data as Shift).storeName}` : ''}
+                      </div>
                       <div className="text-[#666] text-xs">{(item.data as Shift).startTime} – {(item.data as Shift).endTime}</div>
                     </div>
                     <div className="text-green-400 text-sm font-semibold">
