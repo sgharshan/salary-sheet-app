@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/database'
 import { useSettings } from '../hooks/useSettings'
 import { calcShiftPay, calcHoursWorked, calcOutstanding } from '../lib/calculations'
-import { today, weekStart, weekEnd, monthStart, monthEnd, prevMonthStart, prevMonthEnd, formatDisplayDate } from '../lib/dateHelpers'
+import { today, weekStart, weekEnd, monthStart, monthEnd, prevMonthStart, prevMonthEnd, formatDisplayDateWithWeekday } from '../lib/dateHelpers'
 import { generatePdf } from '../lib/pdfReport'
 import { buildJsonReport, downloadJson } from '../lib/jsonReport'
 import type { Shift, Payout } from '../types'
@@ -115,7 +115,7 @@ export default function ReportsPage() {
                 {item.type === 'shift' ? (
                   <>
                     <div>
-                      <div className="text-white text-sm">{formatDisplayDate(item.date)}{(item.data as Shift).label ? ` · ${(item.data as Shift).label}` : ''}</div>
+                      <div className="text-white text-sm">{formatDisplayDateWithWeekday(item.date)}{(item.data as Shift).label ? ` · ${(item.data as Shift).label}` : ''}</div>
                       <div className="text-[#666] text-xs">{(item.data as Shift).startTime} – {(item.data as Shift).endTime}</div>
                     </div>
                     <div className="text-green-400 text-sm font-semibold">
@@ -125,7 +125,7 @@ export default function ReportsPage() {
                 ) : (
                   <>
                     <div>
-                      <div className="text-amber-400 text-sm">{formatDisplayDate(item.date)} · Payout</div>
+                      <div className="text-amber-400 text-sm">{formatDisplayDateWithWeekday(item.date)} · Payout</div>
                       <div className="text-[#666] text-xs">{(item.data as Payout).notes || ''}</div>
                     </div>
                     <div className="text-amber-400 text-sm font-semibold">-{symbol}{(item.data as Payout).amount.toFixed(2)}</div>
