@@ -24,6 +24,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
   const symbol = settings?.currencySymbol ?? '£'
   const stores = settings?.stores ?? []
   const defaultStoreName = stores.find(s => s.id === settings?.defaultStoreId)?.name ?? ''
+  const settingsLoaded = settings !== null
   const isEditing = !!editShift
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function LogShiftModal({ open, onClose, editShift }: Props) {
       setDrafts([blankDraft(defaultStoreName)])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editShift, open])
+  }, [editShift, open, settingsLoaded])
 
   function reset() {
     setDate(today())
