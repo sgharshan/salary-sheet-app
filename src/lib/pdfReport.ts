@@ -68,16 +68,17 @@ export function generatePdf(
   // Shifts table
   autoTable(doc, {
     startY: y,
-    head: [['Date', 'Label', 'Start', 'End', 'Hours', 'Pay']],
+    head: [['Date', 'Store', 'Label', 'Start', 'End', 'Hours', 'Pay']],
     body: shifts.map(s => [
       formatDisplayDate(s.date),
+      s.storeName || '—',
       s.label || '—',
       s.startTime,
       s.endTime,
       `${calcHoursWorked(s.startTime, s.endTime).toFixed(2)}h`,
       `${symbol}${calcShiftPay(s.startTime, s.endTime, effectiveRate(s, currentRate)).toFixed(2)}`,
     ]),
-    foot: [['', '', '', 'Total',
+    foot: [['', '', '', '', 'Total',
       `${shifts.reduce((s, sh) => s + calcHoursWorked(sh.startTime, sh.endTime), 0).toFixed(2)}h`,
       `${symbol}${totalEarned.toFixed(2)}`,
     ]],

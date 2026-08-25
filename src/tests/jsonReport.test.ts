@@ -4,7 +4,7 @@ import type { Shift, Payout } from '../types'
 
 const shift: Shift = {
   id: '1', date: '2026-04-28', startTime: '08:00', endTime: '16:00',
-  label: '', notes: '', hourlyRateSnapshot: 12,
+  label: '', notes: '', storeName: '', hourlyRateSnapshot: 12,
   createdAt: '', updatedAt: '',
 }
 const payout: Payout = {
