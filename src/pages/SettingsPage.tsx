@@ -47,125 +47,141 @@ export default function SettingsPage() {
   }
 
   return (
-    <div>
-      <div className="text-[#444] text-[9px] tracking-widest mb-4 pt-2">SETTINGS</div>
+    <div className="page-stack">
+      <header className="page-header">
+        <h1>Settings</h1>
+        <p>Make ShiftLog fit the way you work.</p>
+      </header>
 
       {/* Hourly rate */}
-      <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-        <div className="text-[#666] text-[9px] tracking-widest mb-2">HOURLY RATE</div>
+      <section className="surface p-4 sm:p-5" aria-labelledby="hourly-rate-heading">
+        <h2 id="hourly-rate-heading" className="section-heading mb-2">Hourly rate</h2>
+        <p className="mb-5 text-sm leading-relaxed text-zinc-400">Your rate is saved with each shift, so past earnings keep their original rate.</p>
         {editing ? (
-          <div className="flex gap-3 items-center">
-            <span className="text-white text-xl font-bold">{symbol}</span>
-            <input
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              value={rateInput}
-              onChange={e => setRateInput(e.target.value)}
-              className="bg-[#111] border border-[#333] rounded-lg px-3 py-2 text-white text-xl font-bold flex-1 outline-none"
-              autoFocus
-              inputMode="decimal"
-            />
-            <button onClick={handleRateSave} className="bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Save</button>
-            <button onClick={() => setEditing(false)} className="text-[#666] text-sm">Cancel</button>
+          <div className="space-y-3">
+            <label className="block">
+              <span className="field-label">Rate per hour ({symbol})</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00"
+                value={rateInput}
+                onChange={e => setRateInput(e.target.value)}
+                className="field-input w-full text-xl font-semibold"
+                autoFocus
+                inputMode="decimal"
+              />
+            </label>
+            <div className="flex gap-3">
+              <button onClick={handleRateSave} className="button-primary">Save rate</button>
+              <button onClick={() => setEditing(false)} className="button-secondary">Cancel</button>
+            </div>
           </div>
         ) : (
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-4">
             <div>
-              <div className="text-white text-2xl font-bold">{symbol}{settings.currentHourlyRate.toFixed(2)}<span className="text-[#666] text-sm font-normal">/hr</span></div>
-              {saved && <div className="text-green-400 text-xs mt-1">Rate updated</div>}
+              <p className="text-white text-3xl font-semibold tracking-tight tabular-nums">{symbol}{settings.currentHourlyRate.toFixed(2)}<span className="ml-1 text-zinc-400 text-sm font-normal">/hr</span></p>
+              {saved && <p role="status" className="text-[#86d7ac] text-xs mt-2">Rate updated</p>}
             </div>
-            <button onClick={() => { setEditing(true); setRateInput(settings.currentHourlyRate.toString()) }} className="text-indigo-400 text-sm">Edit</button>
+            <button onClick={() => { setEditing(true); setRateInput(settings.currentHourlyRate.toString()) }} className="button-secondary">Edit rate</button>
           </div>
         )}
-      </div>
+      </section>
 
       {/* Rate history */}
       {settings.rateHistory.length > 0 && (
-        <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-          <div className="text-[#666] text-[9px] tracking-widest mb-2">RATE HISTORY</div>
-          {settings.rateHistory.slice().reverse().map((r, i) => (
-            <div key={i} className="flex justify-between mb-2">
-              <span className="text-[#888] text-sm">{formatDisplayDate(r.effectiveFrom)}</span>
-              <span className="text-white text-sm">{symbol}{r.rate.toFixed(2)}/hr</span>
-            </div>
-          ))}
-        </div>
+        <section className="surface p-4 sm:p-5" aria-labelledby="rate-history-heading">
+          <h2 id="rate-history-heading" className="section-heading mb-4">Rate history</h2>
+          <dl className="divide-y divide-[#292929]">
+            {settings.rateHistory.slice().reverse().map((r, i) => (
+              <div key={i} className="flex justify-between gap-4 py-3 first:pt-0 last:pb-0 text-sm">
+                <dt className="text-zinc-400">{formatDisplayDate(r.effectiveFrom)}</dt>
+                <dd className="shrink-0 text-zinc-100 tabular-nums">{symbol}{r.rate.toFixed(2)}/hr</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       )}
 
       {/* Stores */}
-      <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-        <div className="text-[#666] text-[9px] tracking-widest mb-3">STORES</div>
-        <div className="flex gap-3 mb-3">
+      <section className="surface p-4 sm:p-5" aria-labelledby="stores-heading">
+        <h2 id="stores-heading" className="section-heading mb-2">Stores</h2>
+        <p className="mb-4 text-sm leading-relaxed text-zinc-400">Keep track of where you work. Your default store is selected for new shifts.</p>
+        <label htmlFor="new-store" className="field-label">Store name</label>
+        <div className="flex gap-3 mb-4">
           <input
+            id="new-store"
             type="text"
-            placeholder="Store name"
+            placeholder="e.g. High Street"
             value={storeInput}
             onChange={e => setStoreInput(e.target.value)}
-            className="flex-1 bg-[#111] border border-[#333] rounded-lg px-3 py-2 text-white text-sm outline-none"
+            className="field-input min-w-0 flex-1"
           />
-          <button onClick={handleAddStore} className="bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Add</button>
+          <button onClick={handleAddStore} className="button-primary shrink-0">Add</button>
         </div>
         {settings.stores.length === 0 ? (
-          <div className="text-[#444] text-xs">No stores added yet</div>
+          <p className="rounded-xl border border-dashed border-[#333] px-4 py-4 text-sm text-zinc-400">No stores yet. Add your first location above.</p>
         ) : (
-          settings.stores.map(store => (
-            <div key={store.id} className="flex justify-between items-center mb-2 last:mb-0">
-              <span className="text-white text-sm">{store.name}</span>
-              <div className="flex items-center gap-3">
+          <div className="divide-y divide-[#292929]">{settings.stores.map(store => (
+            <div key={store.id} className="flex flex-wrap justify-between items-center gap-x-4 gap-y-1 py-3 last:pb-0">
+              <span className="min-w-0 break-words text-zinc-100 text-sm font-medium">{store.name}</span>
+              <div className="flex items-center gap-2">
                 {settings.defaultStoreId === store.id ? (
-                  <span className="text-indigo-400 text-xs font-semibold">Default</span>
+                  <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-indigo-300 text-xs font-medium">Default</span>
                 ) : (
-                  <button onClick={() => setDefaultStore(store.id)} className="text-[#666] text-xs">Set default</button>
+                  <button onClick={() => setDefaultStore(store.id)} aria-label={`Set ${store.name} as default`} className="min-h-11 rounded-lg px-2 text-zinc-400 text-xs hover:bg-[#242424] hover:text-white">Set default</button>
                 )}
-                <button onClick={() => deleteStore(store.id)} className="text-red-400 text-xs">Delete</button>
+                <button onClick={() => deleteStore(store.id)} aria-label={`Delete ${store.name}`} className="min-h-11 rounded-lg px-2 text-red-300 text-xs hover:bg-red-400/10">Delete</button>
               </div>
             </div>
-          ))
+          ))}</div>
         )}
-      </div>
+      </section>
 
       {/* Currency */}
-      <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-        <div className="text-[#666] text-[9px] tracking-widest mb-2">CURRENCY</div>
-        <div className="flex gap-3">
+      <section className="surface p-4 sm:p-5" aria-labelledby="currency-heading">
+        <h2 id="currency-heading" className="section-heading mb-2">Currency</h2>
+        <p className="mb-4 text-sm text-zinc-400">Choose the currency shown throughout your log.</p>
+        <div className="grid grid-cols-3 gap-2">
           {[{ code: 'GBP', sym: '£' }, { code: 'USD', sym: '$' }, { code: 'EUR', sym: '€' }].map(c => (
             <button
               key={c.code}
               onClick={() => updateSettings({ currency: c.code, currencySymbol: c.sym })}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${settings.currency === c.code ? 'bg-indigo-500 text-white border-indigo-500' : 'bg-[#111] text-[#888] border-[#333]'}`}
+              aria-pressed={settings.currency === c.code}
+              className={`min-h-11 px-2 py-3 rounded-xl text-sm font-medium border transition-colors ${settings.currency === c.code ? 'bg-indigo-500/20 text-indigo-200 border-indigo-400/40' : 'bg-[#202020] text-zinc-400 border-[#292929] hover:bg-[#292929] hover:text-white'}`}
             >
               {c.sym} {c.code}
             </button>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Google Drive Sync */}
-      <div className="bg-[#161616] border border-[#222] rounded-xl p-4 mb-4">
-        <div className="text-[#666] text-[9px] tracking-widest mb-3">GOOGLE DRIVE SYNC</div>
+      <section className="surface p-4 sm:p-5" aria-labelledby="sync-heading">
+        <h2 id="sync-heading" className="section-heading mb-4">Google Drive sync</h2>
         {connected ? (
           <>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-green-400" />
-              <span className="text-green-400 text-sm font-semibold">Connected</span>
+              <span className="w-2 h-2 rounded-full bg-[#86d7ac]" aria-hidden="true" />
+              <span className="text-[#86d7ac] text-sm font-medium">Connected</span>
             </div>
             {settings.lastSyncedAt && (
-              <div className="text-[#555] text-xs mb-3">
+              <div className="text-zinc-400 text-sm mb-4">
                 Last synced: {formatDisplayDate(settings.lastSyncedAt.slice(0, 10))}
                 {' '}at {new Date(settings.lastSyncedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
               </div>
             )}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <button
                 onClick={sync}
-                className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold"
+                className="button-primary"
               >
                 Sync Now
               </button>
               <button
                 onClick={disconnect}
-                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-2 text-[#666] text-sm"
+                className="button-secondary"
               >
                 Disconnect
               </button>
@@ -173,27 +189,27 @@ export default function SettingsPage() {
           </>
         ) : (
           <>
-            <div className="text-[#888] text-xs mb-3">
+            <p className="text-zinc-400 text-sm leading-relaxed mb-4">
               Back up your data automatically to Google Drive. Syncs every 5 minutes when online.
-            </div>
+            </p>
             {CLIENT_CONFIGURED ? (
               <button
                 onClick={handleConnect}
                 disabled={connecting}
-                className="bg-indigo-500 rounded-lg px-4 py-2 text-white text-sm font-semibold disabled:opacity-50"
+                className="button-primary"
               >
                 {connecting ? 'Opening Google…' : 'Connect Google Drive'}
               </button>
             ) : (
-              <div className="text-red-400 text-xs bg-red-400/10 rounded-lg px-3 py-2">
-                Google Client ID not configured. Add VITE_GOOGLE_CLIENT_ID to GitHub Secrets and rebuild.
-              </div>
+              <p className="text-zinc-400 text-sm leading-relaxed bg-[#202020] rounded-xl px-4 py-3">
+                Cloud sync is not available in this version. Your entries are saved on this device.
+              </p>
             )}
           </>
         )}
-      </div>
+      </section>
 
-      <div className="text-[#333] text-xs text-center py-4">ShiftLog v1.0.0</div>
+      <p className="text-zinc-500 text-xs text-center py-2">ShiftLog · Made for your working day</p>
     </div>
   )
 }

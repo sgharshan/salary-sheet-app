@@ -1,6 +1,6 @@
 import type { Shift, Payout } from '../../types'
 import { calcShiftPay, calcHoursWorked } from '../../lib/calculations'
-import { formatDisplayDate } from '../../lib/dateHelpers'
+import { formatDisplayDateWithWeekday } from '../../lib/dateHelpers'
 import SwipeableRow from '../ui/SwipeableRow'
 
 interface Props {
@@ -18,21 +18,28 @@ export default function DayDetailPanel({ date, shifts, payouts, symbol, onEditSh
   const dayTotal = shifts.reduce((s, sh) => s + calcShiftPay(sh.startTime, sh.endTime, sh.hourlyRateSnapshot), 0)
 
   return (
-    <div className="bg-[#161616] border border-[#222] rounded-xl overflow-hidden mt-4">
-      <div className="text-[#666] text-[9px] tracking-widest px-4 pt-4 pb-2">{formatDisplayDate(date).toUpperCase()}</div>
+    <section className="surface overflow-hidden" aria-labelledby="selected-day-heading">
+      <div className="flex items-center justify-between gap-3 border-b border-[#292929] px-4 py-4 sm:px-5">
+        <h2 id="selected-day-heading" className="text-sm font-semibold text-zinc-100">{formatDisplayDateWithWeekday(date)}</h2>
+        <span className="shrink-0 text-xs text-zinc-500">{shifts.length + payouts.length} entries</span>
+      </div>
 
       {shifts.length === 0 && payouts.length === 0 && (
-        <div className="text-[#444] text-sm text-center py-4 px-4 pb-4">Nothing logged</div>
+        <div className="empty-state">
+          <p className="font-medium text-zinc-200">A clear day</p>
+          <p className="mt-2 text-sm text-zinc-400">No shifts or payouts logged for this date.</p>
+        </div>
       )}
 
       {shifts.map(s => {
         const content = (
-          <div className="flex justify-between items-center px-4 py-3">
-            <div>
-              <div className="text-white text-sm">{s.startTime} – {s.endTime}{s.label ? ` · ${s.label}` : ''}</div>
-              <div className="text-[#666] text-xs">{calcHoursWorked(s.startTime, s.endTime).toFixed(1)}h</div>
+          <div className="flex justify-between items-start gap-3 px-4 py-4 sm:px-5">
+            <div className="min-w-0">
+              <p className="text-zinc-100 text-sm font-medium">{s.startTime} – {s.endTime}</p>
+              <p className="mt-1 text-zinc-400 text-xs">{calcHoursWorked(s.startTime, s.endTime).toFixed(1)} hours</p>
+              {(s.label || s.storeName) && <p className="mt-1 break-words text-xs text-zinc-400">{[s.label, s.storeName].filter(Boolean).join(' · ')}</p>}
             </div>
-            <div className="text-green-400 font-semibold text-sm">
+            <div className="shrink-0 text-[#86d7ac] font-semibold text-sm tabular-nums">
               {symbol}{calcShiftPay(s.startTime, s.endTime, s.hourlyRateSnapshot).toFixed(2)}
             </div>
           </div>
@@ -46,9 +53,12 @@ export default function DayDetailPanel({ date, shifts, payouts, symbol, onEditSh
 
       {payouts.map(p => {
         const content = (
-          <div className="flex justify-between items-center px-4 py-3">
-            <div className="text-amber-400 text-sm">Payout received{p.notes ? ` · ${p.notes}` : ''}</div>
-            <div className="text-amber-400 font-semibold text-sm">{symbol}{p.amount.toFixed(2)}</div>
+          <div className="flex justify-between items-start gap-3 px-4 py-4 sm:px-5">
+            <div className="min-w-0">
+              <p className="text-amber-300 text-sm font-medium">Payout received</p>
+              {p.notes && <p className="mt-1 break-words text-xs text-zinc-400">{p.notes}</p>}
+            </div>
+            <div className="shrink-0 text-amber-300 font-semibold text-sm tabular-nums">{symbol}{p.amount.toFixed(2)}</div>
           </div>
         )
         return onEditPayout && onDeletePayout ? (
@@ -59,11 +69,11 @@ export default function DayDetailPanel({ date, shifts, payouts, symbol, onEditSh
       })}
 
       {shifts.length > 0 && (
-        <div className="border-t border-[#222] flex justify-between px-4 py-3">
-          <span className="text-[#888] text-xs">Day total</span>
-          <span className="text-white font-semibold">{symbol}{dayTotal.toFixed(2)}</span>
+        <div className="border-t border-[#292929] flex justify-between px-4 py-4 sm:px-5">
+          <span className="text-zinc-400 text-sm">Day total</span>
+          <span className="text-white font-semibold tabular-nums">{symbol}{dayTotal.toFixed(2)}</span>
         </div>
       )}
-    </div>
+    </section>
   )
 }

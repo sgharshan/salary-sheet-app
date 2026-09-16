@@ -18,6 +18,7 @@ export default function LogPayoutModal({ open, onClose, editPayout }: Props) {
   const [amount, setAmount] = useState('')
   const [notes, setNotes] = useState('')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const isEditing = !!editPayout
 
@@ -31,13 +32,22 @@ export default function LogPayoutModal({ open, onClose, editPayout }: Props) {
       setAmount('')
       setNotes('')
     }
+    setError(null)
   }, [editPayout, open])
 
-  function reset() { setDate(today()); setAmount(''); setNotes('') }
+  function reset() { setDate(today()); setAmount(''); setNotes(''); setError(null) }
 
   async function handleSave() {
     const num = parseFloat(amount)
-    if (isNaN(num) || num <= 0) return
+    if (isNaN(num) || num <= 0) {
+      setError('Enter a valid amount greater than zero.')
+      return
+    }
+    if (!date) {
+      setError('Enter a date for this payout.')
+      return
+    }
+    setError(null)
     setSaving(true)
     try {
       if (isEditing && editPayout) {
@@ -47,6 +57,8 @@ export default function LogPayoutModal({ open, onClose, editPayout }: Props) {
       }
       reset()
       onClose()
+    } catch {
+      setError('This payout could not be saved. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -63,6 +75,10 @@ export default function LogPayoutModal({ open, onClose, editPayout }: Props) {
           {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
+
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-red-400">{error}</p>
+      )}
 
       <div className="bg-[#161616] border border-[#222] rounded-xl px-4 py-3 flex justify-between items-center mb-4">
         <span className="text-[#666] text-sm">Date</span>

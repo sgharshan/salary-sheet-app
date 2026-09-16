@@ -1,5 +1,5 @@
 import type { Shift, Payout } from '../../types'
-import { toISODate } from '../../lib/dateHelpers'
+import { toISODate, formatDisplayDateWithWeekday } from '../../lib/dateHelpers'
 
 interface Props {
   year: number
@@ -28,16 +28,16 @@ export default function CalendarGrid({ year, month, shifts, payouts, selectedDat
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ]
 
-  const DOW = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
   return (
     <div>
-      <div className="grid grid-cols-7 mb-1">
+      <div className="grid grid-cols-7 mb-2" aria-hidden="true">
         {DOW.map((d, i) => (
-          <div key={i} className="text-[#444] text-[9px] text-center py-2">{d}</div>
+          <div key={i} className="text-zinc-500 text-[11px] font-medium text-center py-2">{d}</div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
         {cells.map((day, i) => {
           if (!day) return <div key={i} />
           const iso = toISODate(new Date(year, month, day))
@@ -50,13 +50,16 @@ export default function CalendarGrid({ year, month, shifts, payouts, selectedDat
             <button
               key={iso}
               onClick={() => onSelectDate(iso)}
-              className={`relative flex flex-col items-center py-1.5 rounded-lg transition-colors ${isSelected ? 'bg-indigo-500/20' : isToday ? 'bg-[#1e1e1e]' : ''}`}
+              aria-label={`${formatDisplayDateWithWeekday(iso)}, ${shiftCount} ${shiftCount === 1 ? 'shift' : 'shifts'}${hasPayout ? ', payout received' : ''}`}
+              aria-pressed={isSelected}
+              aria-current={isToday ? 'date' : undefined}
+              className={`relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl py-2 transition-colors sm:min-h-14 ${isSelected ? 'bg-indigo-500/20 ring-1 ring-inset ring-indigo-400/50' : isToday ? 'bg-[#242424] hover:bg-[#303030]' : 'hover:bg-[#242424]'}`}
             >
-              <span className={`text-xs mb-0.5 ${isToday ? 'text-indigo-400 font-bold' : 'text-white'}`}>{day}</span>
-              <div className="flex gap-0.5">
-                {shiftCount >= 1 && <div className="w-1.5 h-1.5 rounded-full bg-green-400" />}
-                {shiftCount >= 2 && <div className="w-1.5 h-1.5 rounded-full bg-green-400" />}
-                {hasPayout && <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
+              <span className={`text-sm tabular-nums ${isToday ? 'text-indigo-300 font-bold' : 'text-zinc-200'}`}>{day}</span>
+              <div className="flex h-1.5 gap-0.5" aria-hidden="true">
+                {shiftCount >= 1 && <span className="w-1.5 h-1.5 rounded-full bg-[#86d7ac]" />}
+                {shiftCount >= 2 && <span className="w-1.5 h-1.5 rounded-full bg-[#86d7ac]" />}
+                {hasPayout && <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />}
               </div>
             </button>
           )

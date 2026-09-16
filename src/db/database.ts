@@ -33,7 +33,8 @@ export const db = new ShiftLogDB()
 
 export async function initSettings(): Promise<void> {
   const existing = await db.settings.get(1)
-  if (!existing) {
+  if (existing) return
+  try {
     await db.settings.add({
       id: 1,
       currency: 'GBP',
@@ -46,5 +47,10 @@ export async function initSettings(): Promise<void> {
       googleAccessToken: null,
       googleTokenExpiry: null,
     })
+  } catch (err) {
+    // Two concurrent callers (e.g. React StrictMode's double effect-invoke in
+    // dev) can both see no existing row and race to create it. Whichever
+    // loses just hit a duplicate-key error on a row that now exists — fine.
+    if (!(err instanceof Error) || err.name !== 'ConstraintError') throw err
   }
 }

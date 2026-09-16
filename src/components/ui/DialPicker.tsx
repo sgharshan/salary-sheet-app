@@ -1,82 +1,30 @@
-import { useRef, useEffect, forwardRef } from 'react'
+import { useId } from 'react'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
-const MINUTES = ['00', '15', '30', '45']
-const ITEM_HEIGHT = 40
-
-interface DrumProps {
-  items: string[]
-  selectedIndex: number
-  onScroll: () => void
-}
-
-const Drum = forwardRef<HTMLDivElement, DrumProps>(({ items, onScroll }, ref) => (
-  <div
-    ref={ref}
-    // @ts-ignore — onScrollEnd is a newer browser API not yet in React types
-    onScrollEnd={onScroll}
-    className="h-[120px] w-12 overflow-y-scroll snap-y snap-mandatory scrollbar-none relative"
-    style={{ scrollSnapType: 'y mandatory' }}
-  >
-    <div className="h-[40px]" />
-    {items.map(item => (
-      <div
-        key={item}
-        className="h-[40px] flex items-center justify-center text-white font-semibold text-base snap-center"
-      >
-        {item}
-      </div>
-    ))}
-    <div className="h-[40px]" />
-    <div className="pointer-events-none absolute top-[40px] left-0 right-0 h-[40px] border-t border-b border-indigo-500 bg-indigo-500/10" />
-    <div className="pointer-events-none absolute top-0 left-0 right-0 h-[40px] bg-gradient-to-b from-[#161616] to-transparent" />
-    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-[#161616] to-transparent" />
-  </div>
-))
-Drum.displayName = 'Drum'
+const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
 
 interface Props {
   label: string
-  value: string   // 'HH:MM'
-  onChange: (v: string) => void
+  value: string // 'HH:MM'
+  onChange: (value: string) => void
 }
 
 export default function DialPicker({ label, value, onChange }: Props) {
-  const [hh, mm] = value.split(':')
-  const hourRef = useRef<HTMLDivElement>(null)
-  const minRef = useRef<HTMLDivElement>(null)
-
-  function scrollTo(ref: React.RefObject<HTMLDivElement | null>, index: number) {
-    ref.current?.scrollTo({ top: index * ITEM_HEIGHT, behavior: 'smooth' })
-  }
-
-  useEffect(() => {
-    scrollTo(hourRef, HOURS.indexOf(hh))
-    const minIdx = MINUTES.indexOf(mm)
-    scrollTo(minRef, minIdx === -1 ? 0 : minIdx)
-  }, [value])
-
-  function handleHourScroll() {
-    const el = hourRef.current
-    if (!el) return
-    const idx = Math.min(Math.round(el.scrollTop / ITEM_HEIGHT), HOURS.length - 1)
-    onChange(`${HOURS[idx]}:${mm}`)
-  }
-
-  function handleMinScroll() {
-    const el = minRef.current
-    if (!el) return
-    const idx = Math.min(Math.round(el.scrollTop / ITEM_HEIGHT), MINUTES.length - 1)
-    onChange(`${hh}:${MINUTES[idx]}`)
-  }
+  const labelId = useId()
+  const [hours, minutes] = value.split(':')
+  const selectClass = 'min-h-12 min-w-0 flex-1 cursor-pointer rounded-lg border border-white/10 bg-[#111] px-1 py-2 text-center text-xl font-semibold tabular-nums text-white transition-colors hover:border-indigo-400/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
 
   return (
-    <div className="flex-1 bg-[#161616] rounded-xl p-3 border border-[#222] text-center">
-      <div className="text-[#666] text-[9px] tracking-widest mb-2">{label}</div>
-      <div className="flex justify-center gap-1 items-center">
-        <Drum ref={hourRef} items={HOURS} selectedIndex={HOURS.indexOf(hh)} onScroll={handleHourScroll} />
-        <span className="text-white font-bold text-lg">:</span>
-        <Drum ref={minRef} items={MINUTES} selectedIndex={MINUTES.indexOf(mm)} onScroll={handleMinScroll} />
+    <div role="group" aria-labelledby={labelId} className="min-w-0 flex-1 rounded-2xl border border-white/[0.08] bg-[#161616] p-3 text-center">
+      <div id={labelId} className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#a1a1aa]">{label}</div>
+      <div className="flex items-center justify-center gap-1.5">
+        <select aria-label={`${label} hours`} value={hours} onChange={event => onChange(`${event.target.value}:${minutes}`)} className={selectClass}>
+          {HOURS.map(hour => <option key={hour} value={hour}>{hour}</option>)}
+        </select>
+        <span className="text-lg font-medium text-[#888]" aria-hidden="true">:</span>
+        <select aria-label={`${label} minutes`} value={minutes} onChange={event => onChange(`${hours}:${event.target.value}`)} className={selectClass}>
+          {MINUTES.map(minute => <option key={minute} value={minute}>{minute}</option>)}
+        </select>
       </div>
     </div>
   )

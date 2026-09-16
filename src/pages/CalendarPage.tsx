@@ -33,39 +33,67 @@ export default function CalendarPage() {
   const selectedPayouts = payouts.filter(p => p.date === selectedDate)
 
   function prevMonth() {
-    if (month === 0) { setYear(y => y - 1); setMonth(11) }
-    else setMonth(m => m - 1)
+    const previous = new Date(year, month - 1, 1)
+    setYear(previous.getFullYear())
+    setMonth(previous.getMonth())
+    setSelectedDate(toISODate(previous))
   }
   function nextMonth() {
-    if (month === 11) { setYear(y => y + 1); setMonth(0) }
-    else setMonth(m => m + 1)
+    const next = new Date(year, month + 1, 1)
+    setYear(next.getFullYear())
+    setMonth(next.getMonth())
+    setSelectedDate(toISODate(next))
+  }
+
+  function showToday() {
+    const current = new Date()
+    setYear(current.getFullYear())
+    setMonth(current.getMonth())
+    setSelectedDate(toISODate(current))
   }
 
   const monthLabel = new Date(year, month).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4 pt-2">
-        <button onClick={prevMonth} className="text-[#888] text-lg px-2">‹</button>
-        <span className="text-white font-semibold text-sm">{monthLabel}</span>
-        <button onClick={nextMonth} className="text-[#888] text-lg px-2">›</button>
-      </div>
+    <div className="page-stack">
+      <header className="page-header flex items-start justify-between gap-4">
+        <div>
+          <h1>Calendar</h1>
+          <p>A little perspective on your working month.</p>
+        </div>
+        <button onClick={showToday} className="button-secondary shrink-0">Today</button>
+      </header>
 
-      <CalendarGrid
-        year={year} month={month}
-        shifts={shifts} payouts={payouts}
-        selectedDate={selectedDate}
-        onSelectDate={setSelectedDate}
-      />
+      <section className="surface p-3 sm:p-5" aria-label="Monthly activity calendar">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <button onClick={prevMonth} className="icon-button" aria-label="Previous month">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
+          </button>
+          <h2 className="text-base font-semibold text-white" aria-live="polite">{monthLabel}</h2>
+          <button onClick={nextMonth} className="icon-button" aria-label="Next month">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg>
+          </button>
+        </div>
 
-      <div className="flex gap-4 mt-3 mb-2">
-        {[['bg-green-400', 'Shift'], ['bg-amber-400', 'Payout']].map(([c, l]) => (
-          <div key={l} className="flex items-center gap-1.5">
-            <div className={`w-2 h-2 rounded-full ${c}`} />
-            <span className="text-[#666] text-[9px]">{l}</span>
+        <CalendarGrid
+          year={year} month={month}
+          shifts={shifts} payouts={payouts}
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+        />
+
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#292929] pt-4">
+          <div className="flex gap-4">
+            {[['bg-[#86d7ac]', 'Shift'], ['bg-amber-300', 'Payout']].map(([c, l]) => (
+              <div key={l} className="flex items-center gap-2">
+                <span className={`h-1.5 w-1.5 rounded-full ${c}`} aria-hidden="true" />
+                <span className="text-xs text-zinc-400">{l}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <p className="text-xs text-zinc-500">Select a day for details</p>
+        </div>
+      </section>
 
       {selectedDate && (
         <DayDetailPanel
