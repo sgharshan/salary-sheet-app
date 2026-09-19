@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useId, useRef } from 'react'
+import { useState, useEffect, useId, useRef } from 'react'
 import Modal from '../ui/Modal'
 import { addPayout, updatePayout } from '../../hooks/usePayouts'
 import { useSettings } from '../../hooks/useSettings'

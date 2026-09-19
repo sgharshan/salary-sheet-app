@@ -28,6 +28,7 @@ export default function ReportsPage() {
 
   function applyPreset(p: Preset) {
     setPreset(p)
+    setExportError('')
     if (p === 'week') { setFrom(weekStart(todayStr)); setTo(weekEnd(todayStr)) }
     if (p === 'month') { setFrom(monthStart(todayStr)); setTo(monthEnd(todayStr)) }
     if (p === 'lastMonth') { setFrom(prevMonthStart(todayStr)); setTo(prevMonthEnd(todayStr)) }
@@ -67,6 +68,7 @@ export default function ReportsPage() {
 
   function handleJson() {
     if (!rangeValid || exportingPdf) return
+    setExportError('')
     const report = buildJsonReport(shifts, payouts, from, to, settings?.currency ?? 'GBP', settings?.currentHourlyRate ?? 0)
     downloadJson(report, `ShiftLog-${from}-to-${to}.json`)
   }
@@ -96,11 +98,11 @@ export default function ReportsPage() {
           <div className="grid grid-cols-2 gap-3 mt-4">
             <label className="min-w-0">
               <span className="field-label">From</span>
-              <input type="date" value={from} onChange={e => setFrom(e.target.value)} aria-invalid={!rangeValid} aria-describedby={!rangeValid ? 'report-range-error' : undefined} className="field-input w-full min-w-0" />
+              <input type="date" value={from} onChange={e => { setFrom(e.target.value); setExportError('') }} aria-invalid={!rangeValid} aria-describedby={!rangeValid ? 'report-range-error' : undefined} className="field-input w-full min-w-0" />
             </label>
             <label className="min-w-0">
               <span className="field-label">To</span>
-              <input type="date" value={to} onChange={e => setTo(e.target.value)} aria-invalid={!rangeValid} aria-describedby={!rangeValid ? 'report-range-error' : undefined} className="field-input w-full min-w-0" />
+              <input type="date" value={to} onChange={e => { setTo(e.target.value); setExportError('') }} aria-invalid={!rangeValid} aria-describedby={!rangeValid ? 'report-range-error' : undefined} className="field-input w-full min-w-0" />
             </label>
           </div>
         )}
