@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import HamburgerMenu from './HamburgerMenu'
 import SyncIndicator from './SyncIndicator'
@@ -12,11 +12,12 @@ export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [shiftOpen, setShiftOpen] = useState(false)
   const [payoutOpen, setPayoutOpen] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
   const { status, connected, connect, sync, disconnect } = useSync()
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-zinc-100">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-indigo-500 focus:p-3">Skip to content</a>
+      <a href="#main-content" onClick={event => { event.preventDefault(); mainRef.current?.focus() }} className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-indigo-500 focus:p-3">Skip to content</a>
       <header className="app-header sticky top-0 z-30 border-b border-white/[.07]">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-3 px-4 sm:px-8">
           <div className="flex items-center gap-2">
@@ -33,7 +34,7 @@ export default function AppShell() {
         </div>
       </header>
       <HamburgerMenu open={menuOpen} onClose={() => setMenuOpen(false)} onLogPayout={() => setPayoutOpen(true)} />
-      <main id="main-content" tabIndex={-1} className="mx-auto max-w-6xl px-4 pb-36 pt-7 sm:px-8 sm:pt-10">
+      <main ref={mainRef} id="main-content" tabIndex={-1} className="mx-auto max-w-6xl px-4 pb-36 pt-7 sm:px-8 sm:pt-10">
         <Outlet context={{ openLogShift: () => setShiftOpen(true), openLogPayout: () => setPayoutOpen(true), sync, connect, disconnect, connected }} />
       </main>
       <div className="action-dock pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent px-4 pt-8">

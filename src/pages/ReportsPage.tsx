@@ -4,7 +4,6 @@ import { db } from '../db/database'
 import { useSettings } from '../hooks/useSettings'
 import { calcShiftPay, calcHoursWorked, calcOutstanding } from '../lib/calculations'
 import { today, weekStart, weekEnd, monthStart, monthEnd, prevMonthStart, prevMonthEnd, formatDisplayDateWithWeekday } from '../lib/dateHelpers'
-import { generatePdf } from '../lib/pdfReport'
 import { buildJsonReport, downloadJson } from '../lib/jsonReport'
 
 type Preset = 'week' | 'month' | 'lastMonth' | 'custom'
@@ -23,6 +22,8 @@ export default function ReportsPage() {
   const [preset, setPreset] = useState<Preset>('week')
   const [from, setFrom] = useState(weekStart(todayStr))
   const [to, setTo] = useState(weekEnd(todayStr))
+  const [exportingPdf, setExportingPdf] = useState(false)
+  const [exportError, setExportError] = useState('')
   const rangeValid = Boolean(from && to && from <= to)
 
   function applyPreset(p: Preset) {
@@ -50,13 +51,22 @@ export default function ReportsPage() {
     ...payouts.map(p => ({ type: 'payout' as const, date: p.date, data: p })),
   ].sort((a, b) => a.date.localeCompare(b.date))
 
-  function handlePdf() {
-    if (!rangeValid) return
-    generatePdf(shifts, payouts, from, to, symbol, settings?.currency ?? 'GBP', settings?.currentHourlyRate ?? 0)
+  async function handlePdf() {
+    if (!rangeValid || exportingPdf) return
+    setExportingPdf(true)
+    setExportError('')
+    try {
+      const { generatePdf } = await import('../lib/pdfReport')
+      generatePdf(shifts, payouts, from, to, symbol, settings?.currency ?? 'GBP', settings?.currentHourlyRate ?? 0)
+    } catch {
+      setExportError('Could not create your PDF. Please try again.')
+    } finally {
+      setExportingPdf(false)
+    }
   }
 
   function handleJson() {
-    if (!rangeValid) return
+    if (!rangeValid || exportingPdf) return
     const report = buildJsonReport(shifts, payouts, from, to, settings?.currency ?? 'GBP', settings?.currentHourlyRate ?? 0)
     downloadJson(report, `ShiftLog-${from}-to-${to}.json`)
   }
@@ -173,9 +183,12 @@ export default function ReportsPage() {
         <h2 id="report-export-heading" className="section-heading mb-2">Take your report with you</h2>
         <p className="mb-4 text-sm text-zinc-400">Save a PDF to share, or download the detailed data as JSON.</p>
         <div className="grid grid-cols-2 gap-3">
-          <button onClick={handlePdf} disabled={!rangeValid} className="button-primary">Export PDF</button>
-          <button onClick={handleJson} disabled={!rangeValid} className="button-secondary">Export JSON</button>
+          <button onClick={handlePdf} disabled={!rangeValid || exportingPdf} aria-busy={exportingPdf} aria-live="polite" className="button-primary">
+            {exportingPdf ? 'Preparing PDF…' : 'Export PDF'}
+          </button>
+          <button onClick={handleJson} disabled={!rangeValid || exportingPdf} className="button-secondary">Export JSON</button>
         </div>
+        {exportError && <p role="alert" className="mt-3 rounded-xl bg-red-400/10 px-3 py-3 text-sm text-red-300">{exportError}</p>}
       </section>
     </div>
   )

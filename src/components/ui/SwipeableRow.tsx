@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import Modal from './Modal'
 
 interface Props {
@@ -17,8 +17,22 @@ export default function SwipeableRow({ children, onEdit, onDelete, bgColor = '#1
   const startRef = useRef<{ x: number; y: number } | null>(null)
   const baseOffsetRef = useRef(0)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const actionsRef = useRef<HTMLDivElement>(null)
+  const focusActionsOnOpen = useRef(false)
   const actionsId = useId()
   const expanded = offset < 0
+
+  useEffect(() => {
+    if (expanded && focusActionsOnOpen.current) {
+      focusActionsOnOpen.current = false
+      actionsRef.current?.querySelector<HTMLButtonElement>('button')?.focus()
+    }
+  }, [expanded])
+
+  function moveTo(nextOffset: number) {
+    if (nextOffset === 0 && actionsRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
+    setOffset(nextOffset)
+  }
 
   function onTouchStart(event: React.TouchEvent) {
     startRef.current = { x: event.touches[0].clientX, y: event.touches[0].clientY }
@@ -33,20 +47,21 @@ export default function SwipeableRow({ children, onEdit, onDelete, bgColor = '#1
       startRef.current = null
       return
     }
-    setOffset(Math.min(0, Math.max(deltaX + baseOffsetRef.current, -ACTION_WIDTH)))
+    moveTo(Math.min(0, Math.max(deltaX + baseOffsetRef.current, -ACTION_WIDTH)))
   }
 
   function onTouchEnd() {
     const snap = offset < -(ACTION_WIDTH / 3) ? -ACTION_WIDTH : 0
     baseOffsetRef.current = snap
-    setOffset(snap)
+    moveTo(snap)
     setAnimating(true)
     startRef.current = null
   }
 
   function close(restoreFocus = false) {
+    focusActionsOnOpen.current = false
     baseOffsetRef.current = 0
-    setOffset(0)
+    moveTo(0)
     setAnimating(true)
     if (restoreFocus) triggerRef.current?.focus()
   }
@@ -58,7 +73,7 @@ export default function SwipeableRow({ children, onEdit, onDelete, bgColor = '#1
         close(true)
       }
     }}>
-      <div id={actionsId} aria-hidden={!expanded} inert={!expanded} className="absolute inset-y-0 right-0 flex" style={{ width: ACTION_WIDTH, visibility: expanded ? 'visible' : 'hidden' }}>
+      <div ref={actionsRef} id={actionsId} aria-hidden={!expanded} inert={!expanded} className="absolute inset-y-0 right-0 flex" style={{ width: ACTION_WIDTH, visibility: expanded ? 'visible' : 'hidden' }}>
         <button
           type="button"
           onClick={() => { close(true); onEdit() }}
@@ -93,9 +108,10 @@ export default function SwipeableRow({ children, onEdit, onDelete, bgColor = '#1
           aria-expanded={expanded}
           aria-controls={actionsId}
           onClick={() => {
-            const next = expanded ? 0 : -ACTION_WIDTH
-            baseOffsetRef.current = next
-            setOffset(next)
+            if (expanded) { close(true); return }
+            focusActionsOnOpen.current = true
+            baseOffsetRef.current = -ACTION_WIDTH
+            moveTo(-ACTION_WIDTH)
             setAnimating(true)
           }}
         >
